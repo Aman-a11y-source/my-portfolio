@@ -22,7 +22,7 @@ const GlobalStyles = () => (
 const AIBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [messages, setMessages] = useState([{ role: 'ai', text: "Psst! I'm Aman's digital brain. Ask me anything!" }]);
+  const [messages, setMessages] = useState([{ role: 'ai', text: "Psst! I'm Aman's digital brain. Ask me anything about him!" }]);
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
@@ -46,7 +46,7 @@ const AIBot = () => {
       
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: `System: ${systemPrompt}\nUser: ${userMsg}` }] }] }) 
+        body: JSON.stringify({ contents: [{ parts: [{ text: `User: ${userMsg}` }] }], systemInstruction: { parts: [{ text: systemPrompt }] } })
       });
       
       const data = await response.json();
@@ -139,7 +139,7 @@ const BackgroundScene = () => {
       if (scrollProgress >= 0.2 && scrollProgress < 0.55) {
          targetX = -2.0; 
       } else if (scrollProgress >= 0.55 && scrollProgress < 0.85) {
-         targetX = 2.0;
+         targetX = 2.0; 
       } else {
          targetX = 0; 
       }
@@ -162,7 +162,6 @@ const BackgroundScene = () => {
     };
   }, []);
   
-  // Enforcing full screen styles on container with vw/vh
   return <div ref={mountRef} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -20, pointerEvents: 'none', display: 'block' }} />;
 };
 
@@ -265,7 +264,6 @@ export default function Portfolio() {
         </motion.div>
 
         <motion.div initial={{ x: -100, rotate: -20 }} animate={{ x: 0, rotate: -5 }} className="absolute top-28 left-6 md:left-20 z-20 hidden md:block group">
-           {/* Fixed: Removed Blur */}
            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-slate-200/80 border border-white/50 rotate-3 z-30 shadow-sm"></div>
            <div className="w-24 h-24 rounded-full border-[3px] border-slate-800 bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative z-10 group-hover:scale-110 transition-transform">
               <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Aman&backgroundColor=e0f2fe" alt="Aman Brahma" className="w-full h-full object-cover" />
@@ -333,7 +331,6 @@ export default function Portfolio() {
             <p className="text-2xl mt-4 text-slate-600 font-bold">Code that actually works (mostly).</p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {}
             <ProjectCard 
               title="Smart Bookstore" 
               desc="Full-stack book discovery. Google Books API + Django Auth + Reviews. Clean UI." 
@@ -431,8 +428,8 @@ export default function Portfolio() {
         </div>
       </section>
       <footer className="py-8 text-center text-slate-800 font-bold border-t-2 border-slate-800 bg-yellow-100">
-        <p className="text-xl">Hand-crafted with❤️ By Aman Brahma</p>
-        <p className="mt-2 text-sm opacity-70">© {new Date().getFullYear()}2025</p>
+        <p className="text-xl">Hand-crafted with❤️ by Aman</p>
+        <p className="mt-2 text-sm opacity-70">© {new Date().getFullYear()}2025.</p>
       </footer>
     </div>
   );
