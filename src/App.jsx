@@ -22,7 +22,7 @@ const GlobalStyles = () => (
 const AIBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [messages, setMessages] = useState([{ role: 'ai', text: "Psst! I'm Aman's digital brain. Ask me anything about him!" }]);
+  const [messages, setMessages] = useState([{ role: 'ai', text: "Psst! I'm Aman's digital brain. Ask me anything!" }]);
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
@@ -41,9 +41,9 @@ const AIBot = () => {
         throw new Error("API Key Missing in .env file");
       }
 
-      const systemPrompt = "You are a witty, fun AI assistant for Aman Brahma's portfolio. Aman is a 2nd-year CSE student at NIT Durgapur, passionate about GenAI and Scalable Systems. He has solved 150+ LeetCode problems. Keep answers short, casual, and fun (Gen Z style). Don't mention Gemini. Act like a sketch-bot living in this paper website.";
+      const systemPrompt = "You are a witty, fun AI assistant for Aman Brahma's portfolio website. Aman is a 2nd-year CSE student at NIT Durgapur, passionate about GenAI, C++, and building scalable systems. He has solved 150+ LeetCode problems. Keep answers short, casual, and slightly humorous (Gen Z style). Don't mention Gemini. Act like a sketch-bot living in this paper website.";
       
-      // FIXED: Switched to 'gemini-pro' which is the standard stable model
+      
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: `System: ${systemPrompt}\nUser: ${userMsg}` }] }] }) 
@@ -121,7 +121,7 @@ const BackgroundScene = () => {
     const material = new THREE.MeshBasicMaterial({ color: 0x2c3e50, wireframe: true, transparent: true, opacity: 0.15 });
     const sphere = new THREE.Mesh(geometry, material);
     
-    // Explicitly set initial position to 0,0,0
+    
     sphere.position.set(0, 0, 0);
     scene.add(sphere);
 
@@ -134,14 +134,14 @@ const BackgroundScene = () => {
       sphere.rotation.x += 0.001 + (scrollProgress * 0.02);
       sphere.rotation.y += 0.002 + (scrollProgress * 0.02);
       
-      // FIXED SCROLL LOGIC: Starts at 0, only moves slightly left/right based on section
+      
       let targetX = 0;
       if (scrollProgress >= 0.2 && scrollProgress < 0.55) {
-         targetX = -2.0; // Left for Skills
+         targetX = -2.0; 
       } else if (scrollProgress >= 0.55 && scrollProgress < 0.85) {
-         targetX = 2.0; // Right for Work
+         targetX = 2.0;
       } else {
-         targetX = 0; // Back to center for Contact/Hero
+         targetX = 0; 
       }
       
       sphere.position.x += (targetX - sphere.position.x) * 0.05;
@@ -216,30 +216,59 @@ const ProjectCard = ({ title, desc, tags, link, isPlaceholder = false }) => {
 export default function Portfolio() {
   const scrollTo = (id) => { const element = document.getElementById(id); if (element) element.scrollIntoView({ behavior: 'smooth' }); };
 
-  return (
-   <div className="min-h-screen text-slate-800 paper-pattern overflow-x-hidden selection:bg-yellow-200 relative">
-    <GlobalStyles />
-    <BackgroundScene />
-    <AIBot />
+  // Form handling state
+  const [formStatus, setFormStatus] = useState("idle");
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus("submitting");
     
-    <nav className="fixed top-0 w-full z-40 px-6 py-4 flex justify-between items-center bg-[#fdf6e3]/95 backdrop-blur-sm border-b-2 border-slate-800">
-      <div className="text-2xl font-bold tracking-tighter flex items-center gap-2"><Terminal size={28} className="text-slate-800" /><span className="underline decoration-wavy decoration-yellow-500">Aman Brahma</span></div>
-      <div className="hidden md:flex gap-8 text-xl font-bold text-slate-600">{['Home', 'Skills', 'Work', 'About'].map((item) => <button key={item} onClick={() => scrollTo(item.toLowerCase())} className="hover:text-black hover:rotate-2 transition-transform">{item}</button>)}</div>
-      <button onClick={() => scrollTo('contact')} className="sketch-border px-5 py-2 bg-yellow-300 hover:bg-yellow-400 text-slate-900 font-bold transition-all transform hover:-translate-y-1 active:translate-y-0">Say Hello!</button>
-    </nav>
-
-    <section id="home" className="relative min-h-screen flex items-center justify-center px-6 pt-20 overflow-hidden">
-      <Doodles />
+    const formData = new FormData(e.target);
+    
+    try {
       
-      <motion.div initial={{ rotate: 10, y: -100 }} animate={{ rotate: 5, y: 0 }} className="absolute top-28 right-6 md:right-20 bg-cyan-200 border-2 border-slate-800 p-3 shadow-md z-20 hidden md:block transform hover:rotate-0 transition-transform cursor-help">
-       <div className="flex items-center gap-2 font-bold text-sm"><span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>Status: Caffeinated ☕</div>
-      </motion.div>
+      const response = await fetch("https://formspree.io/f/xzznpqzl", {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        setFormStatus("success");
+        e.target.reset(); 
+      } else {
+        setFormStatus("error");
+      }
+    } catch (error) {
+      setFormStatus("error");
+    }
+  };
 
-      <motion.div initial={{ x: -100, rotate: -20 }} animate={{ x: 0, rotate: -5 }} className="absolute top-28 left-6 md:left-20 z-20 hidden md:block group">
-        {/* Fixed: Removed Blur */}
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-slate-200/80 border border-white/50 rotate-3 z-30 shadow-sm"></div>
-        <div className="w-24 h-24 rounded-full border-[3px] border-slate-800 bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative z-10 group-hover:scale-110 transition-transform">
-              <img src="https://media.licdn.com/dms/image/v2/D5603AQE8ip-p54CF2w/profile-displayphoto-shrink_800_800/B56ZfZEYJoGQAc-/0/1751693495232?e=1766016000&v=beta&t=wcgIaTzrY-sOQKBc_atoU0NpSPn2yR-trlVOKUIB3E4" alt="Aman Brahma" className="w-full h-full object-cover" />
+  return (
+    <div className="min-h-screen text-slate-800 paper-pattern overflow-x-hidden selection:bg-yellow-200 relative">
+      <GlobalStyles />
+      <BackgroundScene />
+      <AIBot />
+      
+      <nav className="fixed top-0 w-full z-40 px-6 py-4 flex justify-between items-center bg-[#fdf6e3]/95 backdrop-blur-sm border-b-2 border-slate-800">
+        <div className="text-2xl font-bold tracking-tighter flex items-center gap-2"><Terminal size={28} className="text-slate-800" /><span className="underline decoration-wavy decoration-yellow-500">Aman Brahma</span></div>
+        <div className="hidden md:flex gap-8 text-xl font-bold text-slate-600">{['Home', 'Skills', 'Work', 'About'].map((item) => <button key={item} onClick={() => scrollTo(item.toLowerCase())} className="hover:text-black hover:rotate-2 transition-transform">{item}</button>)}</div>
+        <button onClick={() => scrollTo('contact')} className="sketch-border px-5 py-2 bg-yellow-300 hover:bg-yellow-400 text-slate-900 font-bold transition-all transform hover:-translate-y-1 active:translate-y-0">Say Hello!</button>
+      </nav>
+
+      <section id="home" className="relative min-h-screen flex items-center justify-center px-6 pt-20 overflow-hidden">
+        <Doodles />
+        <motion.div initial={{ rotate: 10, y: -100 }} animate={{ rotate: 5, y: 0 }} className="absolute top-28 right-6 md:right-20 bg-cyan-200 border-2 border-slate-800 p-3 shadow-md z-20 hidden md:block transform hover:rotate-0 transition-transform cursor-help">
+          <div className="flex items-center gap-2 font-bold text-sm"><span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>Status: Caffeinated ☕</div>
+        </motion.div>
+
+        <motion.div initial={{ x: -100, rotate: -20 }} animate={{ x: 0, rotate: -5 }} className="absolute top-28 left-6 md:left-20 z-20 hidden md:block group">
+           {/* Fixed: Removed Blur */}
+           <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-slate-200/80 border border-white/50 rotate-3 z-30 shadow-sm"></div>
+           <div className="w-24 h-24 rounded-full border-[3px] border-slate-800 bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative z-10 group-hover:scale-110 transition-transform">
+              <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Aman&backgroundColor=e0f2fe" alt="Aman Brahma" className="w-full h-full object-cover" />
            </div>
            <div className="absolute -right-24 top-8 -rotate-12 bg-yellow-300 px-2 py-1 text-xs font-bold border border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
              &larr; That's me!
@@ -304,6 +333,7 @@ export default function Portfolio() {
             <p className="text-2xl mt-4 text-slate-600 font-bold">Code that actually works (mostly).</p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {}
             <ProjectCard 
               title="Smart Bookstore" 
               desc="Full-stack book discovery. Google Books API + Django Auth + Reviews. Clean UI." 
@@ -375,20 +405,34 @@ export default function Portfolio() {
           </div>
           <div className="sketch-border bg-white p-8 md:p-10 transform rotate-1">
              <h3 className="text-3xl font-bold mb-6">Drop a message</h3>
-             <form className="space-y-6 text-left" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <input type="text" placeholder="Your Name" className="w-full bg-slate-50 border-2 border-slate-800 p-4 text-xl font-bold placeholder-slate-400 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all" />
-                  <input type="email" placeholder="Your Email" className="w-full bg-slate-50 border-2 border-slate-800 p-4 text-xl font-bold placeholder-slate-400 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all" />
-                </div>
-                <textarea rows={4} placeholder="What's on your mind?" className="w-full bg-slate-50 border-2 border-slate-800 p-4 text-xl font-bold placeholder-slate-400 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"></textarea>
-                <button className="w-full py-4 bg-slate-800 text-white font-bold text-xl hover:bg-slate-900 shadow-[4px_4px_0px_0px_#fbbf24] hover:shadow-[2px_2px_0px_0px_#fbbf24] hover:translate-x-[2px] hover:translate-y-[2px] transition-all border-2 border-black">Send it! </button>
-             </form>
+             
+             {}
+             {formStatus === "success" ? (
+               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-green-100 border-2 border-green-800 p-6 rounded-xl text-center">
+                 <div className="text-5xl mb-2">🎉</div>
+                 <h4 className="text-2xl font-bold text-green-900">Message Sent!</h4>
+                 <p className="text-green-800 font-bold">Thanks for reaching out. I'll reply soon.</p>
+                 <button onClick={() => setFormStatus("idle")} className="mt-4 text-sm underline font-bold">Send another?</button>
+               </motion.div>
+             ) : (
+               <form className="space-y-6 text-left" onSubmit={handleFormSubmit}>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <input type="text" name="name" placeholder="Your Name" required className="w-full bg-slate-50 border-2 border-slate-800 p-4 text-xl font-bold placeholder-slate-400 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all" />
+                    <input type="email" name="email" placeholder="Your Email" required className="w-full bg-slate-50 border-2 border-slate-800 p-4 text-xl font-bold placeholder-slate-400 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all" />
+                  </div>
+                  <textarea rows={4} name="message" placeholder="What's on your mind?" required className="w-full bg-slate-50 border-2 border-slate-800 p-4 text-xl font-bold placeholder-slate-400 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"></textarea>
+                  <button type="submit" disabled={formStatus === "submitting"} className="w-full py-4 bg-slate-800 text-white font-bold text-xl hover:bg-slate-900 shadow-[4px_4px_0px_0px_#fbbf24] hover:shadow-[2px_2px_0px_0px_#fbbf24] hover:translate-x-[2px] hover:translate-y-[2px] transition-all border-2 border-black disabled:opacity-50">
+                    {formStatus === "submitting" ? "Sending..." : "Send it! 🚀"}
+                  </button>
+                  {formStatus === "error" && <p className="text-red-600 font-bold text-center">Oops! Something went wrong. Email me directly.</p>}
+               </form>
+             )}
           </div>
         </div>
       </section>
       <footer className="py-8 text-center text-slate-800 font-bold border-t-2 border-slate-800 bg-yellow-100">
-        <p className="text-xl">Hand-crafted with❤️ by Aman</p>
-        <p className="mt-2 text-sm opacity-70">© {new Date().getFullYear()}</p>
+        <p className="text-xl">Hand-crafted with❤️ By Aman Brahma</p>
+        <p className="mt-2 text-sm opacity-70">© {new Date().getFullYear()}2025</p>
       </footer>
     </div>
   );
