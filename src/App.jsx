@@ -266,7 +266,7 @@ export default function Portfolio() {
         <motion.div initial={{ x: -100, rotate: -20 }} animate={{ x: 0, rotate: -5 }} className="absolute top-28 left-6 md:left-20 z-20 hidden md:block group">
            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-slate-200/80 border border-white/50 rotate-3 z-30 shadow-sm"></div>
            <div className="w-24 h-24 rounded-full border-[3px] border-slate-800 bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative z-10 group-hover:scale-110 transition-transform">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Aman&backgroundColor=e0f2fe" alt="Aman Brahma" className="w-full h-full object-cover" />
+              <img src="https://pbs.twimg.com/profile_images/1950106402149605376/bPJb0iuI_400x400.jpg" alt="Aman Brahma" className="w-full h-full object-cover" />
            </div>
            <div className="absolute -right-24 top-8 -rotate-12 bg-yellow-300 px-2 py-1 text-xs font-bold border border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
              &larr; That's me!
@@ -308,7 +308,7 @@ export default function Portfolio() {
             <div className="space-y-10">
               <div className="bg-white p-6 sketch-border relative hover:rotate-1 transition-transform">
                 <div className="absolute -top-4 -left-2 bg-yellow-300 px-2 py-1 border-2 border-black font-bold transform -rotate-3 shadow-sm">Languages</div>
-                <div className="flex flex-wrap gap-4 mt-2">{["C++ (STL)", "Python", "JavaScript", "C"].map(s => <SkillBadge key={s} name={s} />)}</div>
+                <div className="flex flex-wrap gap-4 mt-2">{["C++", "Python", "JavaScript", "C","Lua"].map(s => <SkillBadge key={s} name={s} />)}</div>
               </div>
               <div className="bg-white p-6 sketch-border relative hover:-rotate-1 transition-transform">
                 <div className="absolute -top-4 -right-2 bg-cyan-300 px-2 py-1 border-2 border-black font-bold transform rotate-3 shadow-sm">Gen AI & ML</div>
@@ -316,7 +316,7 @@ export default function Portfolio() {
               </div>
                <div className="bg-white p-6 sketch-border relative hover:rotate-1 transition-transform">
                 <div className="absolute -top-4 -left-2 bg-purple-300 px-2 py-1 border-2 border-black font-bold transform -rotate-2 shadow-sm">Web Stuff</div>
-                <div className="flex flex-wrap gap-4 mt-2">{["React.js", "Tailwind", "Django", "Firebase"].map(s => <SkillBadge key={s} name={s} />)}</div>
+                <div className="flex flex-wrap gap-4 mt-2">{["React.js", "Tailwind", "Django", "Firebase","Framer motion","Node/express","UI/UX"].map(s => <SkillBadge key={s} name={s} />)}</div>
               </div>
             </div>
           </div>
@@ -429,7 +429,7 @@ export default function Portfolio() {
       </section>
       <footer className="py-8 text-center text-slate-800 font-bold border-t-2 border-slate-800 bg-yellow-100">
         <p className="text-xl">Hand-crafted with❤️ by Aman</p>
-        <p className="mt-2 text-sm opacity-70">© {new Date().getFullYear()}2025.</p>
+        <p className="mt-2 text-sm opacity-70">© {new Date().getFullYear()}</p>
       </footer>
     </div>
   );
